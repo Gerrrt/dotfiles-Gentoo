@@ -1,0 +1,57 @@
+# dotfiles-Gentoo/install/packages.txt
+# Portage ATOMS (category/name) for the modern terminal stack. One per line.
+# mise (not in the tree) and tree-sitter-cli (cargo) are handled by bootstrap.sh.
+#
+# Heads-up: several modern Rust CLIs may be ~amd64 (testing-keyworded) on a
+# stable profile. If an emerge is blocked by keywords/USE, see
+# gentoo/package.accept_keywords.example and gentoo/package.use.example.
+# Building from source is slow — enable the binhost (--getbinpkg, see README).
+
+# ── shell + multiplexer ───────────────────────────────────────
+app-shells/zsh
+app-misc/tmux
+
+# ── modern CLI core ───────────────────────────────────────────
+sys-apps/eza            # ls
+sys-apps/bat            # cat
+sys-apps/fd             # find (binary: fd)
+sys-apps/ripgrep        # grep
+app-shells/zoxide       # cd
+app-shells/fzf          # fuzzy finder
+dev-util/git-delta      # git pager / diffs (binary: delta)
+sys-process/btop        # top/htop
+app-misc/tealdeer       # tldr (binary: tldr)
+app-shells/starship     # prompt (IN the main tree — emerge, no installer)
+app-shells/atuin        # shell history (IN the main tree)
+app-misc/yazi           # file manager (IN the main tree)
+
+# ── editor + git workflow ─────────────────────────────────────
+app-editors/neovim
+dev-vcs/git             # `git subtree` ships with git on Gentoo
+dev-vcs/lazygit
+net-misc/openssh        # client + server (Gentoo ships one package)
+
+# ── clipboard ─────────────────────────────────────────────────
+gui-apps/wl-clipboard   # wl-copy / wl-paste (Wayland)
+x11-misc/xclip          # X11 fallback
+
+# ── language toolchain ────────────────────────────────────────
+# rust-bin = PREBUILT rust/cargo. Use this, NOT dev-lang/rust — compiling the
+# Rust toolchain from source is a multi-hour ordeal you don't need. Provides
+# the cargo that bootstrap.sh uses to build tree-sitter-cli.
+dev-lang/rust-bin
+
+# ── Neovim provider deps (fix :checkhealth) ───────────────────
+dev-python/pynvim       # the Python 3 provider module
+dev-python/pip
+
+# ── Portage helpers (quality of life) ─────────────────────────
+app-portage/gentoolkit  # equery (owns-file), euse, eclean, ...
+app-portage/eix         # fast package search/index (`eix <term>`)
+
+# ── misc useful ───────────────────────────────────────────────
+net-misc/curl
+net-misc/wget
+app-misc/jq
+sys-apps/gawk
+dev-util/direnv         # verify atom on your tree if it fails: emerge -s direnv
