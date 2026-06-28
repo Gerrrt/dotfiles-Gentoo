@@ -131,8 +131,15 @@ provision() {
   blib_say "emerge atoms (from install/packages.txt)"
   local -a atoms=()
   mapfile -t atoms < <(blib_read_pkgs "$DOTFILES/install/packages.txt")
-  emerge_install "${atoms[@]}"
-  blib_ok "atoms requested: ${#atoms[@]}"
+  # Guard the empty case: an all-comment/blank packages.txt yields a zero-length
+  # array, and `emerge` with no atoms errors out — aborting the whole bootstrap
+  # under `set -e`. Skip the install instead and carry on.
+  if ((${#atoms[@]})); then
+    emerge_install "${atoms[@]}"
+    blib_ok "atoms requested: ${#atoms[@]}"
+  else
+    blib_warn "install/packages.txt lists no atoms — skipping emerge"
+  fi
 
   # mise — not in the main Gentoo tree; official installer (glibc build is fine).
   if ! command -v mise >/dev/null && [[ ! -x "$HOME/.local/bin/mise" ]]; then
