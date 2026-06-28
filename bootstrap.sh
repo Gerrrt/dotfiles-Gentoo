@@ -132,8 +132,10 @@ provision() {
   local -a atoms=()
   mapfile -t atoms < <(blib_read_pkgs "$DOTFILES/install/packages.txt")
   # Guard the empty case: an all-comment/blank packages.txt yields a zero-length
-  # array, and `emerge` with no atoms errors out — aborting the whole bootstrap
-  # under `set -e`. Skip the install instead and carry on.
+  # array. emerge_install wraps `emerge` in `if …; then` (errexit-exempt), so an
+  # empty list wouldn't abort — but it WOULD run `emerge` with no atoms, trip the
+  # "bulk emerge hit a snag" one-by-one fallback, and then log a misleading
+  # "0 requested" success. Skip the emerge instead and carry on.
   if ((${#atoms[@]})); then
     emerge_install "${atoms[@]}"
     blib_ok "atoms requested: ${#atoms[@]}"
